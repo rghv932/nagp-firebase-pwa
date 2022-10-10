@@ -103,6 +103,16 @@
             ],
             "scripts": []
           }
+        },
+        "deploy": {
+          "builder": "@angular/fire:deploy",
+          "options": {
+            "prerender": false,
+            "ssr": false,
+            "browserTarget": "Assignment:build:production",
+            "firebaseProject": "pwa-firebase-time-sheet",
+            "firebaseHostingSite": "pwa-firebase-time-sheet"
+          }
         }
       }
     }

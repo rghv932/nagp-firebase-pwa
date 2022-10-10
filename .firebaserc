@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "pwa-firebase-time-sheet": {
+      "hosting": {
+        "Assignment": [
+          "pwa-firebase-time-sheet"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "pwa-firebase-time-sheet"
+  }
+}
