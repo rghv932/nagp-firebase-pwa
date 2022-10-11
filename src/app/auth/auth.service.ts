@@ -28,7 +28,7 @@ export class AuthService {
   signUp(email: string, password: string) {
     return this.http
       .post<AuthResponse>(
-        'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyAcUYx9TqsLWd7TZnZ9LS53tCbp8Ccnw6M',
+        'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyBELFP4hqtDSeTaNoHmo1FH8_XID7M4Q_Y',
         {
           email: email,
           password: password,
@@ -52,7 +52,7 @@ export class AuthService {
   login(email: string, password: string) {
     return this.http
       .post<AuthResponse>(
-        'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyAcUYx9TqsLWd7TZnZ9LS53tCbp8Ccnw6M',
+        'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyBELFP4hqtDSeTaNoHmo1FH8_XID7M4Q_Y',
         {
           email: email,
           password: password,
@@ -131,7 +131,7 @@ export class AuthService {
   private handleError(errorRes) {
     let errorMessage = 'An unknown error occurred!!';
     if (!errorRes.error || !errorRes.error.error) {
-      return throwError(errorMessage);
+      return throwError(()=>new Error(errorMessage));
     }
     switch (errorRes.error.error.message) {
       case 'EMAIL_EXISTS':
@@ -143,6 +143,6 @@ export class AuthService {
       case 'INVALID_PASSWORD':
         errorMessage = 'Password is not valid!';
     }
-    return throwError(errorMessage);
+    return throwError(()=>new Error(errorMessage));
   }
 }

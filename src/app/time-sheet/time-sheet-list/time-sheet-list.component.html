@@ -1,0 +1,11 @@
+<div class="row">
+  <div class="col-xs-12">
+    <button class="btn btn-success" (click)="onNewTimeSheet()">New Time-Sheet Entry!!</button>
+  </div>
+</div>
+<hr>
+<div class="row">
+  <div class="col-xs-12">
+    <app-time-sheet-item *ngFor="let ts of timeSheets;let i=index" [timeSheet]="ts" [index]="i"></app-time-sheet-item>
+  </div>
+</div>

@@ -1,0 +1,73 @@
+<div class="row">
+  <div class="col-xs-12">
+    <form [formGroup]="timeSheetForm" (ngSubmit)="onSubmit()">
+      <div class="row">
+        <div class="col-xs-12">
+          <button type="submit" class="btn btn-success" [disabled]="!timeSheetForm.valid">Save</button> |
+          <button type="button" class="btn btn-danger" (click)="onCancel()">Cancel</button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="form-group">
+            <label for="name">Type</label>
+            <input type="text" id="type" formControlName="type" class="form-control">
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="form-group">
+            <label for="date">Date</label>
+            <input type="date" id="date" formControlName="date" class="form-control">
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="form-group">
+            <label for="startTime">Start Time</label>
+            <input type="time" id="startTime" formControlName="startTime" class="form-control">
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="form-group">
+            <label for="ndTime">End Time</label>
+            <input type="time" id="endTime" formControlName="endTime" class="form-control">
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="form-group">
+            <label for="description">Description</label>
+            <textarea type="text" id="description" formControlName="description" class="form-control" rows="6"></textarea>
+          </div>
+        </div>
+      </div>
+      <!-- <div class="row">
+        <div class="col-xs-12" formArrayName="ingrediants">
+          <div class="row" *ngFor="let ing of recipeForm.get('ingrediants')['controls']; let i=index" [formGroupName]="i" style="margin-top: 10px;">
+            <div class="col-xs-8">
+              <input type="text" class="form-control" formControlName="name">
+            </div>
+            <div class="col-xs-2">
+              <input type="number" class="form-control" formControlName="amount">
+            </div>
+            <div class="col-xs-2">
+              <button type="button" class="btn btn-danger" (click)="onDeleteIngrediant(i)">X</button>
+            </div>
+          </div>
+          <hr>
+          <div class="row">
+            <div class="col-xs-12">
+              <button type="button" class="btn btn-success" (click)="onAddIngrediant()">Add Ingrediant</button>
+            </div>
+          </div>
+        </div> 
+      </div> -->
+    </form>
+  </div>
+</div>

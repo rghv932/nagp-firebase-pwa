@@ -18,6 +18,12 @@ import { AlertComponent } from './shared/alert/alert.component';
 import { LoadingSpinnerComponent } from './shared/loading-spinner/loading-spinner.component';
 import { AuthService } from './auth/auth.service';
 import { TimeSheetComponent } from './time-sheet/time-sheet.component';
+import { TimeSheetDetailComponent } from './time-sheet/time-sheet-detail/time-sheet-detail.component';
+import { TimeSheetEditComponent } from './time-sheet/time-sheet-edit/time-sheet-edit.component';
+import { TimeSheetListComponent } from './time-sheet/time-sheet-list/time-sheet-list.component';
+import { TimeSheetStartComponent } from './time-sheet/time-sheet-start/time-sheet-start.component';
+import { TimeSheetItemComponent } from './time-sheet/time-sheet-list/time-sheet-item/time-sheet-item.component';
+import { TimeSheetService } from './time-sheet/time-sheet.service';
 
 @NgModule({
   declarations: [
@@ -27,7 +33,12 @@ import { TimeSheetComponent } from './time-sheet/time-sheet.component';
     PlaceholderDirective,
     AlertComponent,
     LoadingSpinnerComponent,
-    TimeSheetComponent
+    TimeSheetComponent,
+    TimeSheetDetailComponent,
+    TimeSheetEditComponent,
+    TimeSheetListComponent,
+    TimeSheetStartComponent,
+    TimeSheetItemComponent
   ],
   imports: [
     BrowserModule,
@@ -45,7 +56,7 @@ import { TimeSheetComponent } from './time-sheet/time-sheet.component';
     provideAuth(() => getAuth()),
     provideDatabase(() => getDatabase())
   ],
-  providers: [DataStorageService,AuthService],
+  providers: [DataStorageService,TimeSheetService,AuthService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
