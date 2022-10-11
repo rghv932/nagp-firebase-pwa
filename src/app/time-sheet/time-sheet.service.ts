@@ -1,7 +1,14 @@
+import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 
 import { Subject } from "rxjs";
+
 import { TimeSheet } from "./time-sheet.model";
+
+interface TimeFireType{
+  ownerId:string;
+  timeSheets:TimeSheet[]
+}
 
 @Injectable()
 export class TimeSheetService{
@@ -13,7 +20,7 @@ export class TimeSheetService{
   //   new Recipe('Chinese Noodles','Just a delicious one!!','https://i1.wp.com/pixahive.com/wp-content/uploads/2020/09/Chinese-Noodles-25786-pixahive.jpg?fit=778%2C1151&ssl=1',[new Ingrediant('Spaghetti',5),new Ingrediant('Carrot',10)]),
   //   //new Recipe('Shakshi','Hot Chocolate',this.imageSource,[new Ingrediant('Hotness',100000),new Ingrediant('Tameez',5)])
   // ];
-  constructor(){}
+  constructor(private http:HttpClient){}
 
   getTimeSheets=()=>this.timeSheets.slice();
 
@@ -21,9 +28,22 @@ export class TimeSheetService{
     return this.timeSheets[id];
   }
 
-  addTimeSheet(timeSheet:TimeSheet){
-    this.timeSheets.push(timeSheet);
-    this.timeSheetChanged.next(this.timeSheets.slice());
+  addTimeSheet(timeSheet:TimeSheet,userId:string){
+    // this.timeSheets.push(timeSheet);
+    // this.timeSheetChanged.next(this.timeSheets.slice());
+    
+    const time={
+      "timesheetId":{"ownerId":[timeSheet]}
+    };
+    const t:TimeFireType={
+        ownerId:userId,
+        timeSheets:[timeSheet]
+    }
+    
+    this.http.post('https://pwa-firebase-time-sheet-default-rtdb.firebaseio.com/timesheets.json',t)
+    .subscribe(response=>{
+      console.log(response);
+    });
   }
 
   updateTimeSheet(id:number,newTimeSheet:TimeSheet){

@@ -2,8 +2,10 @@ import { Component, OnInit } from '@angular/core';
 
 import { Subscription } from 'rxjs';
 import { AuthService } from '../auth/auth.service';
+import { User } from '../auth/user.model';
+import { TimeSheet, TimeSheetType } from '../time-sheet/time-sheet.model';
 
-import { DataStorageService } from '../shared/data-storage.service';
+import { TimeSheetService } from '../time-sheet/time-sheet.service';
 
 @Component({
   selector: 'app-header',
@@ -14,15 +16,19 @@ export class HeaderComponent implements OnInit {
   
   isAuthenticated = false;
   private userSub: Subscription;
+  user:User;
 
   constructor(
-    private dataService: DataStorageService,
+    private tsService: TimeSheetService,
     private authService: AuthService
   ) {}
 
   ngOnInit() {
     this.userSub = this.authService.user.subscribe((user) => {
       this.isAuthenticated = !!user;
+      if(this.isAuthenticated){
+        this.user=user;
+      }
     });
   }
 
@@ -36,6 +42,12 @@ export class HeaderComponent implements OnInit {
 
   onLogout() {
     this.authService.logout();
+  }
+
+  onClick(){
+    let value=new TimeSheet(TimeSheetType.WorkHours,new Date().getDate(),new Date().getTime(),new Date().getTime(),"something");
+    this.tsService.addTimeSheet(value,this.user.id);
+    console.log();
   }
 
   ngOnDestroy() {

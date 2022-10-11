@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { BrowserModule } from '@angular/platform-browser';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { initializeApp,provideFirebaseApp } from '@angular/fire/app';
@@ -24,6 +24,7 @@ import { TimeSheetListComponent } from './time-sheet/time-sheet-list/time-sheet-
 import { TimeSheetStartComponent } from './time-sheet/time-sheet-start/time-sheet-start.component';
 import { TimeSheetItemComponent } from './time-sheet/time-sheet-list/time-sheet-item/time-sheet-item.component';
 import { TimeSheetService } from './time-sheet/time-sheet.service';
+import { AuthInterceptorService } from './auth/auth-interceptor.service';
 
 @NgModule({
   declarations: [
@@ -56,7 +57,7 @@ import { TimeSheetService } from './time-sheet/time-sheet.service';
     provideAuth(() => getAuth()),
     provideDatabase(() => getDatabase())
   ],
-  providers: [DataStorageService,TimeSheetService,AuthService],
+  providers: [DataStorageService,TimeSheetService,AuthService,{provide:HTTP_INTERCEPTORS, useClass:AuthInterceptorService,multi:true}],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

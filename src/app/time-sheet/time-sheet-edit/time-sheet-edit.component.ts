@@ -29,9 +29,9 @@ export class TimeSheetEditComponent implements OnInit {
 
   private initForm(){
     let timeSheetType:TimeSheetType;
-    let timeSheetDate:Date=null;
-    let timeSheetStartTime:Date;
-    let timeSheetEndTime:Date;
+    let timeSheetDate: number;
+    let timeSheetStartTime:number;
+    let timeSheetEndTime:number;
     let timeSheetDescription='';
 
     if(this.editMode){
@@ -83,7 +83,7 @@ export class TimeSheetEditComponent implements OnInit {
       this.tsService.updateTimeSheet(this.id,this.timeSheetForm.value);
     }
     else{
-      this.tsService.addTimeSheet(this.timeSheetForm.value);
+      this.tsService.addTimeSheet(this.timeSheetForm.value,"");
     }
     this.onCancel();
   }

@@ -5,12 +5,12 @@ export enum TimeSheetType {
 
 export class TimeSheet{
   public type:TimeSheetType;
-  public date:Date;
-  public startTime:Date;
-  public endTime:Date;
+  public date:number;
+  public startTime:number;
+  public endTime:number;
   public description:string;
 
-  constructor(tp:TimeSheetType,date:Date,startTime:Date,endTime:Date,desc:string){
+  constructor(tp:TimeSheetType,date:number,startTime:number,endTime:number,desc:string){
     this.type=tp;
     this.date=date;
     this.startTime=startTime;
