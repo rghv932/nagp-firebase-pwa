@@ -45,9 +45,9 @@ export class HeaderComponent implements OnInit {
   }
 
   onClick(){
-    let value=new TimeSheet(TimeSheetType.WorkHours,new Date().getDate(),new Date().getTime(),new Date().getTime(),"something");
-    this.tsService.addTimeSheet(value,this.user.id);
-    console.log();
+    let value=new TimeSheet(TimeSheetType.WorkDay,new Date().getDate().toString(),new Date().getTime().toString(),new Date().getTime().toString(),"something");
+    this.tsService.addTimeSheet(value);
+    //console.log();
   }
 
   ngOnDestroy() {

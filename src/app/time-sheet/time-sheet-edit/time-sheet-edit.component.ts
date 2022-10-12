@@ -14,6 +14,10 @@ export class TimeSheetEditComponent implements OnInit {
   id:number;
   editMode=false;
   timeSheetForm:FormGroup;
+  workDay=TimeSheetType.WorkDay;
+  leaveDay=TimeSheetType.LeaveDay;
+  imagePath;
+  myDatePicker;
 
   constructor(private route:ActivatedRoute,private tsService:TimeSheetService,private router:Router) { }
 
@@ -28,11 +32,12 @@ export class TimeSheetEditComponent implements OnInit {
   }
 
   private initForm(){
-    let timeSheetType:TimeSheetType;
-    let timeSheetDate: number;
-    let timeSheetStartTime:number;
-    let timeSheetEndTime:number;
+    let timeSheetType:TimeSheetType=TimeSheetType.WorkDay;
+    let timeSheetDate: any='2022-10-14';
+    let timeSheetStartTime:any='13:50';
+    let timeSheetEndTime;
     let timeSheetDescription='';
+    let images=new FormArray([]);
 
     if(this.editMode){
       const recipe=this.tsService.getTimeSheetById(this.id);
@@ -62,7 +67,7 @@ export class TimeSheetEditComponent implements OnInit {
       'startTime':new FormControl(timeSheetStartTime,Validators.required),
       'endTime':new FormControl(timeSheetEndTime,Validators.required),
       'description':new FormControl(timeSheetDescription,Validators.required),
-      //'ingrediants':ingrediants
+      'images':images
     });
   }
 
@@ -83,7 +88,8 @@ export class TimeSheetEditComponent implements OnInit {
       this.tsService.updateTimeSheet(this.id,this.timeSheetForm.value);
     }
     else{
-      this.tsService.addTimeSheet(this.timeSheetForm.value,"");
+      //console.log(this.timeSheetForm.value.date);
+      this.tsService.addTimeSheet(this.timeSheetForm.value);
     }
     this.onCancel();
   }
@@ -92,8 +98,16 @@ export class TimeSheetEditComponent implements OnInit {
     this.router.navigate(['../'], {relativeTo:this.route});
   }
 
-  onDeleteIngrediant(id:number){
-    (<FormArray>this.timeSheetForm.get('ingrediants')).removeAt(id);
+  onTypeChange(e){
+    if(e.target.value!=0){
+      (<FormArray>this.timeSheetForm.get('images')).push(
+        new FormGroup({
+          'image':new FormControl(null,Validators.required)
+        })
+      );
+    }
+    else {
+      (<FormArray>this.timeSheetForm.get('images')).removeAt(0);
+    }   
   }
-
 }

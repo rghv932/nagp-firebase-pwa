@@ -4,8 +4,10 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { BrowserModule } from '@angular/platform-browser';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { initializeApp,provideFirebaseApp } from '@angular/fire/app';
-import { provideAuth,getAuth } from '@angular/fire/auth';
+import { AngularFireAuthModule } from '@angular/fire/compat/auth';
+import { provideAuth,getAuth} from '@angular/fire/auth';
 import { provideDatabase,getDatabase } from '@angular/fire/database';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -25,6 +27,11 @@ import { TimeSheetStartComponent } from './time-sheet/time-sheet-start/time-shee
 import { TimeSheetItemComponent } from './time-sheet/time-sheet-list/time-sheet-item/time-sheet-item.component';
 import { TimeSheetService } from './time-sheet/time-sheet.service';
 import { AuthInterceptorService } from './auth/auth-interceptor.service';
+import { ManagerComponent } from './manager/manager.component';
+import { ManagerListComponent } from './manager/manager-list/manager-list.component';
+import { ManagerItemComponent } from './manager/manager-list/manager-item/manager-item.component';
+import { ManagerEditComponent } from './manager/manager-edit/manager-edit.component';
+import { ManagerDetailComponent } from './manager/manager-detail/manager-detail.component';
 
 @NgModule({
   declarations: [
@@ -39,7 +46,12 @@ import { AuthInterceptorService } from './auth/auth-interceptor.service';
     TimeSheetEditComponent,
     TimeSheetListComponent,
     TimeSheetStartComponent,
-    TimeSheetItemComponent
+    TimeSheetItemComponent,
+    ManagerComponent,
+    ManagerListComponent,
+    ManagerItemComponent,
+    ManagerEditComponent,
+    ManagerDetailComponent
   ],
   imports: [
     BrowserModule,
@@ -55,7 +67,9 @@ import { AuthInterceptorService } from './auth/auth-interceptor.service';
     }),
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideAuth(() => getAuth()),
-    provideDatabase(() => getDatabase())
+    provideDatabase(() => getDatabase()),
+    AngularFireAuthModule,
+    BrowserAnimationsModule
   ],
   providers: [DataStorageService,TimeSheetService,AuthService,{provide:HTTP_INTERCEPTORS, useClass:AuthInterceptorService,multi:true}],
   bootstrap: [AppComponent]

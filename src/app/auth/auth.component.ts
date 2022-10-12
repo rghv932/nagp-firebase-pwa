@@ -46,7 +46,7 @@ export class AuthComponent implements OnInit {
     }
 
     authObs.subscribe((data) => {
-      console.log(data);
+      //console.log(data);
       this.isLoading=false;
       this.router.navigate(['/time-sheet']);
     },
@@ -58,6 +58,10 @@ export class AuthComponent implements OnInit {
     });
 
     form.reset();
+  }
+
+  signInWithGoogle(){
+    this.authService.googleSignIn();
   }
 
   onHandleError(){

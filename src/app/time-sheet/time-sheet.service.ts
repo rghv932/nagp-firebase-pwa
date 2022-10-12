@@ -2,51 +2,118 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 
 import { Subject } from "rxjs";
+import { User } from "../auth/user.model";
 
-import { TimeSheet } from "./time-sheet.model";
+import { TimeSheet, TimeSheetType } from "./time-sheet.model";
 
 interface TimeFireType{
   ownerId:string;
   timeSheets:TimeSheet[]
 }
 
+interface TimeFireUserType{
+  timeSheetId:string;
+}
+
 @Injectable()
 export class TimeSheetService{
-
+  timeSheetId:string;
   timeSheetChanged=new Subject<TimeSheet[]>();
-  private timeSheets:TimeSheet[]=[];
-  // private recipes: Recipe[]=[
-  //   new Recipe('A Test Recipe','test','https://cdn.pixabay.com/photo/2016/06/15/19/09/food-1459693_960_720.jpg',[new Ingrediant('tomato',2),new Ingrediant('potato',3)]),
-  //   new Recipe('Chinese Noodles','Just a delicious one!!','https://i1.wp.com/pixahive.com/wp-content/uploads/2020/09/Chinese-Noodles-25786-pixahive.jpg?fit=778%2C1151&ssl=1',[new Ingrediant('Spaghetti',5),new Ingrediant('Carrot',10)]),
-  //   //new Recipe('Shakshi','Hot Chocolate',this.imageSource,[new Ingrediant('Hotness',100000),new Ingrediant('Tameez',5)])
-  // ];
+  private timeSheets:TimeSheet[]=[
+  ];
+
+  user:User;
+  
   constructor(private http:HttpClient){}
 
-  getTimeSheets=()=>this.timeSheets.slice();
+  //getTimeSheets=()=>this.timeSheets.slice();
 
   getTimeSheetById(id:number){
     return this.timeSheets[id];
   }
 
-  addTimeSheet(timeSheet:TimeSheet,userId:string){
-    // this.timeSheets.push(timeSheet);
-    // this.timeSheetChanged.next(this.timeSheets.slice());
-    
-    const time={
-      "timesheetId":{"ownerId":[timeSheet]}
-    };
+  addTimeSheetFirst(userId:string){    
     const t:TimeFireType={
-        ownerId:userId,
-        timeSheets:[timeSheet]
+      ownerId:userId,
+      timeSheets:[]
     }
     
     this.http.post('https://pwa-firebase-time-sheet-default-rtdb.firebaseio.com/timesheets.json',t)
     .subscribe(response=>{
-      console.log(response);
+      this.timeSheetId=response['name'];
+      //console.log(this.timeSheetId);
+      
+      const userData:TimeFireUserType={
+        timeSheetId:this.timeSheetId
+      };
+
+      //console.log("user ID:",userId);
+      //console.log("user ID:",userData);
+      
+      const url=`https://pwa-firebase-time-sheet-default-rtdb.firebaseio.com/users/${userId}.json`;
+      //console.log("user ID:",url);
+
+      this.http.put(url,userData)
+        .subscribe(response=>{
+          //console.log(response);
+        });
     });
+
+    // const url=`https://pwa-firebase-time-sheet-default-rtdb.firebaseio.com/users/${userId}.json`;
+    // this.http.post(url,userData)
+    // .subscribe(response=>{
+    //   console.log(response);
+    // });
+  }
+
+  addTimeSheet(timeSheet:TimeSheet){
+    //console.log("through userId",userId);
+    // this.timeSheets.push(timeSheet);
+    // this.timeSheetChanged.next(this.timeSheets.slice());
+    // const t:TimeFireType={
+    //   ownerId:this.user.id,
+    //   timeSheets:[timeSheet]
+    // }
+    
+    const length=this.timeSheets.length;
+    this.http.patch(`https://pwa-firebase-time-sheet-default-rtdb.firebaseio.com/timesheets/${this.timeSheetId}/timeSheets/${length}.json`,timeSheet)
+      .subscribe(response=>{
+        console.log(response);
+        this.getTimeSheets();
+      });
+    
+    // this.http.get('https://pwa-firebase-time-sheet-default-rtdb.firebaseio.com/timesheets/something.json')
+    //   .subscribe(response=>{
+    //     //console.log(response);
+    //   });
+
+    
+  }
+
+  getTimeSheets(){
+    this.http.get(`https://pwa-firebase-time-sheet-default-rtdb.firebaseio.com/timesheets/${this.timeSheetId}.json`)
+      .subscribe((response:TimeFireType)=>{
+        this.timeSheets=response?.timeSheets ?? [];
+        this.timeSheetChanged.next(this.timeSheets.slice());
+        console.log("add time sheet first:",this.timeSheets);
+      });
+    return this.timeSheets;
+  }
+
+  getTimeSheetId(){
+    const url=`https://pwa-firebase-time-sheet-default-rtdb.firebaseio.com/users/${this.user.id}.json`;
+    this.http.get(url)
+      .subscribe((response:TimeFireUserType)=>{
+        this.timeSheetId=response.timeSheetId;
+        console.log(response);
+      });
   }
 
   updateTimeSheet(id:number,newTimeSheet:TimeSheet){
+    this.http.patch(`https://pwa-firebase-time-sheet-default-rtdb.firebaseio.com/timesheets/${this.timeSheetId}/timeSheets/${id}.json`,newTimeSheet)
+      .subscribe(response=>{
+        console.log(response);
+      });
     this.timeSheets[id]=newTimeSheet;
     this.timeSheetChanged.next(this.timeSheets.slice());
   }

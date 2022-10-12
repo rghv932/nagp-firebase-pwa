@@ -15,11 +15,11 @@ export class TimeSheetListComponent implements OnInit {
   constructor(private tsService:TimeSheetService,private router:Router,private route:ActivatedRoute) { }
 
   ngOnInit(): void {
-    // this.recipeService.recipeChanged.subscribe(
-    //   (recipesList:Recipe[])=>{
-    //     this.recipes=recipesList;
-    //   }
-    // );
+    this.tsService.timeSheetChanged.subscribe(
+      (timeSheetList:TimeSheet[])=>{
+        this.timeSheets=timeSheetList;
+      }
+    );
     this.timeSheets=this.tsService.getTimeSheets();
   }
 

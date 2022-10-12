@@ -1,1 +1,41 @@
-<p>time-sheet-detail works!</p>
+<div class="row">
+  <div class="col-xs-6">
+    <button class="btn btn-primary" (click)="onEditSheet()">Edit Entry</button>
+  </div>
+  <div class="col-xs-6">
+    <button class="btn btn-danger" (click)="onDeleteSheet()">Delete Entry</button>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-12">
+    <h2>Date: {{timeSheet.date | date}}</h2>
+  </div>
+</div>
+<br>
+<hr>
+<div class="row">
+  <div class="col-xs-12">
+    <div>
+      <h3>Type: {{timeSheet.type==0?"Work Day":"Leave Day"}}</h3>
+    </div>
+  </div>
+</div>
+<br>
+<hr>
+<div class="row">
+  <div class="col-xs-12">
+    <div>
+      <h3>{{timeSheet.startTime}} - {{timeSheet.endTime}}</h3>
+    </div>
+  </div>
+</div>
+<br>
+<hr>
+<div class="row">
+  <div class="col-xs-12">
+    <div>
+      <h3>{{timeSheet.description}}</h3>
+    </div>
+  </div>
+</div>

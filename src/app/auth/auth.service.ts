@@ -1,11 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
+import { AngularFireAuth } from '@angular/fire/compat/auth';
+import { GoogleAuthProvider } from '@angular/fire/auth';
 
 import { BehaviorSubject, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 
-import { DataStorageService } from '../shared/data-storage.service';
+import { TimeSheetService } from '../time-sheet/time-sheet.service';
 import { User } from './user.model';
 
 export interface AuthResponse {
@@ -23,7 +25,11 @@ export class AuthService {
   user = new BehaviorSubject<User>(null);
   private tokenExpirationTimer:any;
 
-  constructor(private http: HttpClient, private router: Router,private dataStorageService:DataStorageService) {}
+  constructor(
+    private http: HttpClient,
+    private router: Router,
+    private tsService:TimeSheetService
+  ) {}
 
   signUp(email: string, password: string) {
     return this.http
@@ -44,7 +50,7 @@ export class AuthService {
             resData.idToken,
             +resData.expiresIn
           );
-          //this.dataStorageService.storeUserDate(email,password);
+          this.tsService.addTimeSheetFirst(resData.localId);
         })
       );
   }
@@ -68,7 +74,6 @@ export class AuthService {
             resData.idToken,
             +resData.expiresIn
           );
-          //this.dataStorageService.storeUserDate(email,password);
         })
       );
   }
@@ -93,6 +98,7 @@ export class AuthService {
 
     if(loadedUser.token){
       this.user.next(loadedUser);
+      this.tsService.user=loadedUser;
       const expirationDuration=new Date(userData._tokenExpirationDate).getTime()-new Date().getTime();
       this.autoLogout(expirationDuration);
     }
@@ -115,6 +121,16 @@ export class AuthService {
     expirationDuration);
   }
 
+  googleSignIn(){
+    // return this.fireAuth.signInWithPopup(new GoogleAuthProvider())
+    //   .then(res=>{
+    //     console.log("see the google sign in result:",res);
+    //   },
+    //   err=>{
+    //     alert(err.message);
+    //   })
+  }
+
   private handleAuth(
     email: string,
     userId: string,
@@ -124,6 +140,8 @@ export class AuthService {
     const expirationDate = new Date(new Date().getTime() + expiresIn * 1000);
     const user = new User(email, userId, token, expirationDate);
     this.user.next(user);
+    this.tsService.user=user;
+    this.tsService.getTimeSheetId();
     this.autoLogout(expiresIn*1000);
     localStorage.setItem('userData', JSON.stringify(user));
   }
