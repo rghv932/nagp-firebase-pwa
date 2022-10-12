@@ -1,1 +1,63 @@
-<p>manager-edit works!</p>
+<div class="row">
+  <div class="col-xs-12">
+    <form [formGroup]="timeSheetForm" (ngSubmit)="onSubmit()">
+      <div class="row">
+        <div class="col-xs-12">
+          <button type="submit" class="btn btn-success" [disabled]="!timeSheetForm.valid">Save</button> |
+          <button type="button" class="btn btn-danger" (click)="onCancel()">Cancel</button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="form-group">
+            <label for="name">Type</label>
+            <h3>Type: {{timeSheetForm.value.type==0?"Work Day":"Leave Day"}}</h3>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="form-group">
+            <label for="date">Date</label>
+            <h2>{{timeSheetForm.value.date | date}}</h2>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="form-group">
+            <label for="startTime">Start Time</label>
+            <h3>{{timeSheetForm.value.startTime}}</h3>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="form-group">
+            <label for="endTime">End Time</label>
+            <h3>{{timeSheetForm.value.endTime}}</h3>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="form-group">
+            <label for="description">Description</label>
+            <h3>{{timeSheetForm.value.description}}</h3>
+          </div>
+        </div>
+      </div>
+      <!-- <div class="row">
+        <div class="col-xs-12" formArrayName="images">
+          <div class="row" *ngFor="let ing of timeSheetForm.get('images')['controls']; let i=index" [formGroupName]="i" style="margin-top: 10px;">
+            <div class="col-xs-12">
+              <label for="description">Please upload a leave approval email screenshot.</label>
+              <input type="file" accept="image/*" class="form-control" formControlName="image">
+            </div>            
+          </div>
+          <hr>
+        </div> 
+      </div> -->
+    </form>
+  </div>
+</div>

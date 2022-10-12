@@ -32,6 +32,7 @@ import { ManagerListComponent } from './manager/manager-list/manager-list.compon
 import { ManagerItemComponent } from './manager/manager-list/manager-item/manager-item.component';
 import { ManagerEditComponent } from './manager/manager-edit/manager-edit.component';
 import { ManagerDetailComponent } from './manager/manager-detail/manager-detail.component';
+import { ManagerStartComponent } from './manager/manager-start/manager-start.component';
 
 @NgModule({
   declarations: [
@@ -51,7 +52,8 @@ import { ManagerDetailComponent } from './manager/manager-detail/manager-detail.
     ManagerListComponent,
     ManagerItemComponent,
     ManagerEditComponent,
-    ManagerDetailComponent
+    ManagerDetailComponent,
+    ManagerStartComponent
   ],
   imports: [
     BrowserModule,

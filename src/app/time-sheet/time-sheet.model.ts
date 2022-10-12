@@ -3,6 +3,12 @@ export enum TimeSheetType {
   LeaveDay
 }
 
+export enum TimeSheetStatus{
+  InProgress='InProgress',
+  Approved='Approved',
+  Rejected='Rejected'
+}
+
 export class TimeSheet{
   public type:TimeSheetType;
   public date:string;

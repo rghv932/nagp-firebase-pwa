@@ -33,9 +33,9 @@ export class TimeSheetEditComponent implements OnInit {
 
   private initForm(){
     let timeSheetType:TimeSheetType=TimeSheetType.WorkDay;
-    let timeSheetDate: any='2022-10-14';
-    let timeSheetStartTime:any='13:50';
-    let timeSheetEndTime;
+    let timeSheetDate: any='2000-01-01';
+    let timeSheetStartTime:any='00:00';
+    let timeSheetEndTime='00:00';
     let timeSheetDescription='';
     let images=new FormArray([]);
 
@@ -69,18 +69,6 @@ export class TimeSheetEditComponent implements OnInit {
       'description':new FormControl(timeSheetDescription,Validators.required),
       'images':images
     });
-  }
-
-  onAddIngrediant(){
-    (<FormArray>this.timeSheetForm.get('ingrediants')).push(
-      new FormGroup({
-        'name':new FormControl(null,Validators.required),
-        'amount':new FormControl(null,[
-          Validators.required,
-          Validators.pattern(/^[1-9]+[0-9]*$/)
-        ])
-      })
-    );  
   }
 
   onSubmit(){

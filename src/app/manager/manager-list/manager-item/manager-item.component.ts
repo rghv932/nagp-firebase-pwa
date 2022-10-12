@@ -1,4 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+
+import { TimeSheet } from 'src/app/time-sheet/time-sheet.model';
 
 @Component({
   selector: 'app-manager-item',
@@ -7,9 +9,9 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ManagerItemComponent implements OnInit {
 
-  constructor() { }
+  @Input() timeSheet:TimeSheet;
+  @Input() index:number;
 
   ngOnInit(): void {
   }
-
 }
