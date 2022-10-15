@@ -25,8 +25,39 @@
     </form>
 
     <div class="row">
-      <a (click)="signInWithGoogle()" style="text-decoration: none; cursor: pointer;">Sign in with Google</a>
+      <div class="col-xs-12 col-md-12" *ngIf="!isLoading">
+        <hr>
+        <button class="btn btn-primary" type="button" (click)="signInWithGoogle()" style="text-decoration: none; cursor: pointer;">Sign in with Google</button>
+      </div>
     </div>
+
+    <!-- <div class="row">
+      <form #f="ngForm" class="col-xs-12 col-md-12" (ngSubmit)="onSubmitUsingPhone(f)" *ngIf="!isLoading">
+        <hr>
+        <div class="form-group">
+          <label for="phone">Phone - No :</label>
+          <input type="tel" id="phone" class="form-control" ngModel name="phone" required placeholder="Please input your country code as well(eg- +91-xxxxxxxxxxx)">
+        </div>
+        
+        <div>
+          <button class="btn btn-primary" type="submit" [disabled]="!f.valid">Sign in with Phone Number</button>
+        </div>
+      </form>
+      <div id="recaptcha-container"></div>      
+    </div>
+
+    <div class="row">
+      <form #f="ngForm" class="col-xs-12 col-md-12" >
+        <hr>
+        <div class="form-group">
+          <label for="otp">OTP :</label>
+          <input type="text" id="otp" class="form-control" ngModel name="otp" required>
+        </div>
+        <div>
+          <button class="btn btn-primary" type="submit" [disabled]="!f.valid">Verify OTP</button>
+        </div>
+      </form>
+    </div> -->
 
   </div>
 </div>

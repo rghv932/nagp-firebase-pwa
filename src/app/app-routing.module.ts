@@ -7,6 +7,10 @@ import { TimeSheetDetailComponent } from './time-sheet/time-sheet-detail/time-sh
 import { TimeSheetEditComponent } from './time-sheet/time-sheet-edit/time-sheet-edit.component';
 import { TimeSheetStartComponent } from './time-sheet/time-sheet-start/time-sheet-start.component';
 import { TimeSheetComponent } from './time-sheet/time-sheet.component';
+import { ManagerComponent } from './manager/manager.component';
+import { ManagerStartComponent } from './manager/manager-start/manager-start.component';
+import { ManagerEditComponent } from './manager/manager-edit/manager-edit.component';
+import { ManagerDetailComponent } from './manager/manager-detail/manager-detail.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/time-sheet', pathMatch: 'full' },
@@ -27,7 +31,25 @@ const routes: Routes = [
       },
     ],
   },
-  { path: 'auth', component: AuthComponent }
+  { 
+    path: 'manager',
+    component:ManagerComponent,
+    //canActivate:[AuthGuard],
+    children:[
+      { path: '', component: ManagerStartComponent },
+      { path: 'new', component: ManagerEditComponent },
+      {
+        path: ':id',
+        component: ManagerDetailComponent,
+      },
+      {
+        path: ':id/edit',
+        component: ManagerEditComponent,
+      },
+    ],
+  },
+  { path: 'auth', component: AuthComponent },
+  { path: '**', component: TimeSheetComponent }
 ];
 
 @NgModule({

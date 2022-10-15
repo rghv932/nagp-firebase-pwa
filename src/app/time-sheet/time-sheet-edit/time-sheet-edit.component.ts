@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 
-import { TimeSheetType } from '../time-sheet.model';
+import { TimeSheetStatus, TimeSheetType } from '../time-sheet.model';
 import { TimeSheetService } from '../time-sheet.service';
 
 @Component({
@@ -16,8 +16,8 @@ export class TimeSheetEditComponent implements OnInit {
   timeSheetForm:FormGroup;
   workDay=TimeSheetType.WorkDay;
   leaveDay=TimeSheetType.LeaveDay;
-  imagePath;
-  myDatePicker;
+  imagePath: any;
+  myDatePicker: any;
 
   constructor(private route:ActivatedRoute,private tsService:TimeSheetService,private router:Router) { }
 
@@ -33,6 +33,7 @@ export class TimeSheetEditComponent implements OnInit {
 
   private initForm(){
     let timeSheetType:TimeSheetType=TimeSheetType.WorkDay;
+    let timeSheetStatus:TimeSheetStatus=TimeSheetStatus.InProgress;
     let timeSheetDate: any='2000-01-01';
     let timeSheetStartTime:any='00:00';
     let timeSheetEndTime='00:00';
@@ -40,14 +41,15 @@ export class TimeSheetEditComponent implements OnInit {
     let images=new FormArray([]);
 
     if(this.editMode){
-      const recipe=this.tsService.getTimeSheetById(this.id);
-      timeSheetType=recipe.type;
-      timeSheetDate=recipe.date;
-      timeSheetStartTime=recipe.startTime;
-      timeSheetEndTime=recipe.endTime;
-      timeSheetDescription=recipe.description;
-      // if(recipe['ingrediants']){
-      //   for(let ing of recipe.ingrediants){
+      const timeSheet=this.tsService.getTimeSheetById(this.id);
+      timeSheetType=timeSheet.type;
+      timeSheetDate=timeSheet.date;
+      timeSheetStartTime=timeSheet.startTime;
+      timeSheetEndTime=timeSheet.endTime;
+      timeSheetDescription=timeSheet.description;
+      timeSheetStatus=TimeSheetStatus.InProgress;
+      // if(timeSheet['ingrediants']){
+      //   for(let ing of timeSheet.ingrediants){
       //     ingrediants.push(
       //       new FormGroup({
       //         'name':new FormControl(ing.name,Validators.required),
@@ -67,7 +69,8 @@ export class TimeSheetEditComponent implements OnInit {
       'startTime':new FormControl(timeSheetStartTime,Validators.required),
       'endTime':new FormControl(timeSheetEndTime,Validators.required),
       'description':new FormControl(timeSheetDescription,Validators.required),
-      'images':images
+      'images':images,
+      'timeSheetStatus':new FormControl(timeSheetStatus)
     });
   }
 

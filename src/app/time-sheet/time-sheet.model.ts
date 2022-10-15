@@ -15,6 +15,7 @@ export class TimeSheet{
   public startTime:string;
   public endTime:string;
   public description:string;
+  public status:TimeSheetStatus;
 
   constructor(tp:TimeSheetType,date:string,startTime:string,endTime:string,desc:string){
     this.type=tp;
@@ -22,5 +23,6 @@ export class TimeSheet{
     this.startTime=startTime;
     this.endTime=endTime;
     this.description=desc;
+    this.status=TimeSheetStatus.InProgress;
   }
 }

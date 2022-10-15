@@ -2,9 +2,10 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 
-import { Observable, Subscription } from 'rxjs';
+import {  Subscription } from 'rxjs';
+import firebase from 'firebase/compat/app';
 
-import { AuthResponse, AuthService } from './auth.service';
+import { AuthService } from './auth.service';
 import { AlertComponent } from '../shared/alert/alert.component';
 import { PlaceholderDirective } from '../shared/placeholder/placeholder.directive';
 
@@ -17,11 +18,16 @@ export class AuthComponent implements OnInit {
   isLoginMode = true;
   isLoading=false;
   error:string=null;
+  confirmResult;
+  applicationVerifier:firebase.auth.RecaptchaVerifier;
   @ViewChild(PlaceholderDirective) alertHost: PlaceholderDirective;
 
   private closeSub:Subscription;
 
-  constructor(private authService: AuthService,private router:Router) { }
+  constructor(private authService: AuthService,private router:Router) { 
+    // this.applicationVerifier=new firebase.auth.RecaptchaVerifier(
+    //   'recaptcha-container');
+  }
 
   ngOnInit(): void {
   }
@@ -35,34 +41,121 @@ export class AuthComponent implements OnInit {
       return;
     }
 
-    let authObs:Observable<AuthResponse>;
+    let authObs;
     this.isLoading=true;
 
     if (this.isLoginMode) {
-      authObs=this.authService.login(form.value.email, form.value.password);
+      //authObs=this.authService.login(form.value.email, form.value.password);
+      authObs=this.authService.signInUsingSdk(form.value.email, form.value.password);
     }
     else {
-      authObs=this.authService.signUp(form.value.email, form.value.password);
+      authObs=this.authService.signUpUsingSdk(form.value.email, form.value.password);
     }
 
-    authObs.subscribe((data) => {
-      //console.log(data);
-      this.isLoading=false;
-      this.router.navigate(['/time-sheet']);
-    },
-    (error) => {
-      console.log(error);
-      this.error=error;
-      this.showErrorAlert(error);
-      this.isLoading=false;
+    authObs.subscribe({
+      next:data=>{
+        //console.log("this is the data:",data);
+        this.isLoading=false;
+        //console.log("here");
+        this.router.navigate(['/time-sheet']);
+      },
+      error:error=>{
+        console.log(error);
+        this.error=error;
+        this.showErrorAlert(error);
+        this.isLoading=false;
+      }
     });
-
+    
+    // authObs.subscribe((data) => {
+    //   console.log("this is the data:",data);
+    //   this.isLoading=false;
+    //   console.log("here");
+    //   this.router.navigate(['/time-sheet']);
+    // },
+    // (error) => {
+    //   console.log(error);
+    //   this.error=error;
+    //   this.showErrorAlert(error);
+    //   this.isLoading=false;
+    // });
     form.reset();
   }
 
   signInWithGoogle(){
-    this.authService.googleSignIn();
+    let authObs;
+    this.isLoading=true;
+    authObs=this.authService.googleSignIn();
+    authObs.subscribe({
+      next:data=>{
+        //console.log("this is the data:",data);
+        this.isLoading=false;
+        //console.log("here");
+        this.router.navigate(['/time-sheet']);
+      },
+      error:error=>{
+        console.log(error);
+        this.error=error;
+        this.showErrorAlert(error);
+        this.isLoading=false;
+      }
+    });
   }
+
+  // onSubmitUsingPhone(form: NgForm) {
+  //   if(!form.valid){
+  //     return;
+  //   }
+
+  //   let authObs;
+  //   this.isLoading=true;
+  //   this.applicationVerifier=new firebase.auth.RecaptchaVerifier(
+  //     'recaptcha-container');
+
+  //   console.log("application verifier in auth.ts"+this.applicationVerifier);
+  //   authObs = this.authService.phoneSignIn(form.value.phone,this.applicationVerifier);
+
+  //   authObs.subscribe({
+  //     next:()=>{
+  //       //console.log("this is the submit phone data:",typeof data,"\n"+data);
+  //       this.isLoading=false;
+  //       //console.log("here");
+  //     },
+  //     error:error=>{
+  //       console.log(error);
+  //       this.error=error;
+  //       this.showErrorAlert(error);
+  //       this.isLoading=false;
+  //     }
+  //   });
+  //   form.reset();
+  // }
+
+  // onConfirmOTP(form:NgForm){
+  //   if(!form.valid){
+  //     return;
+  //   }
+
+  //   let authObs;
+  //   this.isLoading=true;
+
+  //   authObs = this.authService.confirmOTP(form.value.otp);
+
+  //   authObs.subscribe({
+  //     next:data=>{
+  //       console.log("this is the otp data:",typeof data,"\n"+data);
+  //       this.isLoading=false;
+  //       //console.log("here");
+  //     },
+  //     error:error=>{
+  //       console.log(error);
+  //       this.error=error;
+  //       this.showErrorAlert(error);
+  //       this.isLoading=false;
+  //     }
+  //   });
+  //   form.reset();
+  // }
 
   onHandleError(){
     this.error=null;
@@ -72,6 +165,7 @@ export class AuthComponent implements OnInit {
     if(this.closeSub){
       this.closeSub.unsubscribe();
     }
+    
   }
 
   private showErrorAlert(message:string){

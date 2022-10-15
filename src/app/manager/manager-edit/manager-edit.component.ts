@@ -43,7 +43,6 @@ export class ManagerEditComponent implements OnInit {
       timeSheetStartTime=recipe.startTime;
       timeSheetEndTime=recipe.endTime;
       timeSheetDescription=recipe.description;
-      
     }
 
     this.timeSheetForm=new FormGroup({
