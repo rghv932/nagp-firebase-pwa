@@ -9,55 +9,58 @@
       </div>
       <div class="row">
         <div class="col-xs-12">
+          <h2>Date: {{timeSheetForm.value.date | date}}</h2>
+        </div>
+      </div>
+      <br>
+      <hr>
+      <div class="row">
+        <div class="col-xs-12">
           <div class="form-group">
-            <label for="name">Type</label>
+            <label for="status">Status</label>
+            <select formControlName="status" class="form-control">
+              <!-- <option disabled>Select Type</option> -->
+              <option [value]="inProgress">In Progress</option>
+              <option [value]="approved">Approve</option>
+              <option [value]="rejected">Reject</option>
+          </select>
+          </div>
+        </div>
+      </div>
+      <br>
+      <hr>
+      <div class="row">
+        <div class="col-xs-12">
+          <div>
             <h3>Type: {{timeSheetForm.value.type==0?"Work Day":"Leave Day"}}</h3>
           </div>
         </div>
       </div>
+      <br>
+      <hr>
       <div class="row">
         <div class="col-xs-12">
-          <div class="form-group">
-            <label for="date">Date</label>
-            <h2>{{timeSheetForm.value.date | date}}</h2>
+          <div>
+            <h4>Duration: {{timeSheetForm.value.startTime}} - {{timeSheetForm.value.endTime}}</h4>
+          </div>
+        </div>
+      </div>
+      <br>
+      <hr>
+      <div class="row">
+        <div class="col-xs-12">
+          <div>
+            <h4>Description: {{timeSheetForm.value.description}}</h4>
           </div>
         </div>
       </div>
       <div class="row">
         <div class="col-xs-12">
-          <div class="form-group">
-            <label for="startTime">Start Time</label>
-            <h3>{{timeSheetForm.value.startTime}}</h3>
+          <div>
+            <img [src]="timeSheetForm.value.imagePath" alt="email screenshot" width="250" height="300">
           </div>
         </div>
       </div>
-      <div class="row">
-        <div class="col-xs-12">
-          <div class="form-group">
-            <label for="endTime">End Time</label>
-            <h3>{{timeSheetForm.value.endTime}}</h3>
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-xs-12">
-          <div class="form-group">
-            <label for="description">Description</label>
-            <h3>{{timeSheetForm.value.description}}</h3>
-          </div>
-        </div>
-      </div>
-      <!-- <div class="row">
-        <div class="col-xs-12" formArrayName="images">
-          <div class="row" *ngFor="let ing of timeSheetForm.get('images')['controls']; let i=index" [formGroupName]="i" style="margin-top: 10px;">
-            <div class="col-xs-12">
-              <label for="description">Please upload a leave approval email screenshot.</label>
-              <input type="file" accept="image/*" class="form-control" formControlName="image">
-            </div>            
-          </div>
-          <hr>
-        </div> 
-      </div> -->
     </form>
   </div>
 </div>

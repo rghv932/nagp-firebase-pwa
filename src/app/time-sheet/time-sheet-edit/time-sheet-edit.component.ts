@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
+import { FileUpload } from 'src/app/shared/file-upload.model';
 
 import { TimeSheetStatus, TimeSheetType } from '../time-sheet.model';
 import { TimeSheetService } from '../time-sheet.service';
+import { FileUploadService } from './file-upload.service';
 
 @Component({
   selector: 'app-time-sheet-edit',
@@ -16,10 +18,15 @@ export class TimeSheetEditComponent implements OnInit {
   timeSheetForm:FormGroup;
   workDay=TimeSheetType.WorkDay;
   leaveDay=TimeSheetType.LeaveDay;
-  imagePath: any;
-  myDatePicker: any;
+  isLeaveDay:boolean=false;
+  percentage = 0;
+  
+  selectedFile?: File;
+  currentFileUpload?: FileUpload;
 
-  constructor(private route:ActivatedRoute,private tsService:TimeSheetService,private router:Router) { }
+  photoUploaded:boolean=false;
+
+  constructor(private route:ActivatedRoute,private tsService:TimeSheetService,private router:Router, private fupService:FileUploadService) { }
 
   ngOnInit(): void {
     this.route.params.subscribe(
@@ -38,7 +45,7 @@ export class TimeSheetEditComponent implements OnInit {
     let timeSheetStartTime:any='00:00';
     let timeSheetEndTime='00:00';
     let timeSheetDescription='';
-    let images=new FormArray([]);
+    let timeSheetPath='';
 
     if(this.editMode){
       const timeSheet=this.tsService.getTimeSheetById(this.id);
@@ -69,36 +76,69 @@ export class TimeSheetEditComponent implements OnInit {
       'startTime':new FormControl(timeSheetStartTime,Validators.required),
       'endTime':new FormControl(timeSheetEndTime,Validators.required),
       'description':new FormControl(timeSheetDescription,Validators.required),
-      'images':images,
-      'timeSheetStatus':new FormControl(timeSheetStatus)
+      'imagePath':new FormControl(timeSheetPath),
+      'status':new FormControl(timeSheetStatus)
     });
   }
 
+  uploadPhoto(){
+    if (this.selectedFile) {
+      console.log("inside if");
+      const file: File | null = this.selectedFile;
+      //this.selectedFile = undefined;
+
+      if (file) {
+        console.log("inside if File");
+        this.currentFileUpload = new FileUpload(file);
+        this.fupService.pushFileToStorage(this.currentFileUpload).subscribe(
+          percentage => {
+            console.log(percentage);
+            if(percentage==100){
+              this.photoUploaded=true;
+            }
+            //this.percentage = Math.round(percentage ? percentage : 0);
+          },
+          error => {
+            console.log(error);
+          }
+        );
+        console.log(this.currentFileUpload);
+        this.timeSheetForm.value.imagePath=this.currentFileUpload.url;
+      }
+    }    
+   
+  }
+
   onSubmit(){
+    //let imageUrl;
+    this.timeSheetForm.value.imagePath=this.fupService.url;
     if(this.editMode){
       this.tsService.updateTimeSheet(this.id,this.timeSheetForm.value);
     }
     else{
-      //console.log(this.timeSheetForm.value.date);
+      console.log("image path:",this.timeSheetForm.value.imagePath);
       this.tsService.addTimeSheet(this.timeSheetForm.value);
     }
     this.onCancel();
   }
+
+  selectFile(event: any): void {
+    this.selectedFile = event.target.files[0];
+  }
+
 
   onCancel(){
     this.router.navigate(['../'], {relativeTo:this.route});
   }
 
   onTypeChange(e){
+    console.log("changed:",e.target.value);
     if(e.target.value!=0){
-      (<FormArray>this.timeSheetForm.get('images')).push(
-        new FormGroup({
-          'image':new FormControl(null,Validators.required)
-        })
-      );
+      this.isLeaveDay=true;
+      this.photoUploaded=false;
     }
     else {
-      (<FormArray>this.timeSheetForm.get('images')).removeAt(0);
+      this.isLeaveDay=false;
     }   
   }
 }

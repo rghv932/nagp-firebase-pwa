@@ -7,12 +7,13 @@ import { lastValueFrom, Observable, Subject } from "rxjs";
 import { User } from "../auth/user.model";
 import { TimeSheet } from "./time-sheet.model";
 
-interface TimeFireType{
-  ownerId:string;
-  timeSheets:TimeSheet[]
+export interface TimeFireType{
+  ownerId: string;
+  name: string;
+  timeSheets: TimeSheet[]
 }
 
-interface TimeFireUserType{
+export interface TimeFireUserType{
   timeSheetId?:string;
   role: string
 }
@@ -21,17 +22,14 @@ interface TimeFireUserType{
 export class TimeSheetService{
   timeSheetId:string;
   timeSheetChanged=new Subject<TimeSheet[]>();
-  private timeSheets:TimeSheet[]=[
+  public timeSheets:TimeSheet[]=[
   ];
   itemRef: AngularFireObject<any>;
   item: Observable<any>;
-
   user:User;
   
-  constructor(private http:HttpClient,private db: AngularFireDatabase){
+  constructor(private http:HttpClient){
     this.timeSheetId=localStorage.getItem('timeSheetId');
-    this.itemRef = this.db.object('timesheets');
-    this.item = this.itemRef.valueChanges();
     // this.itemRef.snapshotChanges().subscribe(action => {
     //   console.log("the snapshot that changed:",action.payload.val())
     // });
@@ -48,9 +46,10 @@ export class TimeSheetService{
     return this.timeSheets[id];
   }
 
-  addTimeSheetFirst(userId: string,role: string){    
+  addTimeSheetFirst(userId: string,role: string, name: string){    
     const t:TimeFireType={
       ownerId:userId,
+      name: name,
       timeSheets:[]
       //timeSheets:[new TimeSheet(TimeSheetType.WorkDay,'2022-01-01','00:00','00:00','Anything Firstly Added')]
     };
@@ -87,6 +86,7 @@ export class TimeSheetService{
   }
 
   addTimeSheet(timeSheet:TimeSheet){
+    console.log(timeSheet);
     //console.log("through userId",userId);
     // this.timeSheets.push(timeSheet);
     // this.timeSheetChanged.next(this.timeSheets.slice());
@@ -148,6 +148,7 @@ export class TimeSheetService{
   }
 
   updateTimeSheet(id:number,newTimeSheet:TimeSheet){
+    console.log("here------>:",newTimeSheet);
     this.http.patch(`https://pwa-firebase-time-sheet-default-rtdb.firebaseio.com/timesheets/${this.timeSheetId}/timeSheets/${id}.json`,newTimeSheet)
       .subscribe(response=>{
         //(response);
@@ -156,13 +157,8 @@ export class TimeSheetService{
     this.timeSheetChanged.next(this.timeSheets.slice());
   }
 
-  deleteTimeSheet(id:number){
-    this.timeSheets.splice(id,1);
-    this.timeSheetChanged.next(this.timeSheets.slice());
-  }
-
-  setTimeSheets(newRecipes:TimeSheet[]){
-    this.timeSheets=newRecipes;
+  setTimeSheets(newTimeSheets:TimeSheet[]){
+    this.timeSheets=newTimeSheets;
     this.timeSheetChanged.next(this.timeSheets.slice());
   }
 }

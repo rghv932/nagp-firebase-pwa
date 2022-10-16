@@ -11,6 +11,7 @@ import { ManagerComponent } from './manager/manager.component';
 import { ManagerStartComponent } from './manager/manager-start/manager-start.component';
 import { ManagerEditComponent } from './manager/manager-edit/manager-edit.component';
 import { ManagerDetailComponent } from './manager/manager-detail/manager-detail.component';
+import { AuthAdminGuard } from './auth/auth-admin.guard';
 
 const routes: Routes = [
   { path: '', redirectTo: '/time-sheet', pathMatch: 'full' },
@@ -34,16 +35,15 @@ const routes: Routes = [
   { 
     path: 'manager',
     component:ManagerComponent,
-    //canActivate:[AuthGuard],
+    canActivate:[AuthAdminGuard],
     children:[
       { path: '', component: ManagerStartComponent },
-      { path: 'new', component: ManagerEditComponent },
       {
-        path: ':id',
+        path: ':timeSheetId/:id',
         component: ManagerDetailComponent,
       },
       {
-        path: ':id/edit',
+        path: ':timeSheetId/:id/edit',
         component: ManagerEditComponent,
       },
     ],

@@ -45,7 +45,7 @@ export class AuthService {
           3600,
           'employee'
         );
-        this.tsService.addTimeSheetFirst(user.uid,'employee');
+        this.tsService.addTimeSheetFirst(user.uid,'employee',user.email);
       }).catch(this.handleError)
     );
     //   .pipe(
@@ -217,16 +217,16 @@ export class AuthService {
       const user=userCred.user;
       console.log(userCred.additionalUserInfo.isNewUser);
         let token: string=await user.getIdToken();
-        const role=await this.tsService.getUserRole(user.uid);
+        //const role=await this.tsService.getUserRole(user.uid);
         this.handleAuth(
           user.email,
           user.uid,
           token,
           3600,
-          role
+          'employee'
         );
         if(userCred.additionalUserInfo.isNewUser){
-          this.tsService.addTimeSheetFirst(user.uid,'employee');
+          this.tsService.addTimeSheetFirst(user.uid,'employee',user.email);
         }
         else{
           await this.tsService.getTimeSheetId();
@@ -236,7 +236,6 @@ export class AuthService {
   }
 
   phoneSignIn(phoneNumber: string,applicationVerifier: firebase.auth.ApplicationVerifier){
-    console.log(applicationVerifier);
     return defer(
       ()=> this.afAuth.signInWithPhoneNumber(phoneNumber,applicationVerifier)
       .then(data=>{
@@ -249,23 +248,22 @@ export class AuthService {
   }
 
   confirmOTP(otp: string){
-    console.log(this.confirmResult);
     return defer(
       ()=> this.confirmResult.confirm(otp)
       .then(async (userCred)=>{
         const user=userCred.user;
         console.log(userCred.additionalUserInfo.isNewUser);
           let token: string=await user.getIdToken();
-          const role=await this.tsService.getUserRole(user.uid);
+          //const role=await this.tsService.getUserRole(user.uid);
           this.handleAuth(
             user.email,
             user.uid,
             token,
             3600,
-            role
+            'employee'
           );
           if(userCred.additionalUserInfo.isNewUser){
-            this.tsService.addTimeSheetFirst(user.uid,'employee');
+            this.tsService.addTimeSheetFirst(user.uid,'employee',user.phoneNumber);
           }
           else{
             await this.tsService.getTimeSheetId();
@@ -291,19 +289,39 @@ export class AuthService {
   }
 
   private handleError(errorRes) {
+    console.log("here");
     let errorMessage = 'An unknown error occurred!!';
-    if (!errorRes.error || !errorRes.error.error) {
+    if (!errorRes.code || !errorRes.message) {
       return throwError(()=>new Error(errorMessage));
     }
-    switch (errorRes.error.error.message) {
-      case 'EMAIL_EXISTS':
-        errorMessage = 'This Email exists already!!';
+    switch (errorRes.code) {
+      case 'auth/weak-password':
+        errorMessage = 'The password is too weak.';
         break;
-      case 'EMAIL_NOT_FOUND':
-        errorMessage = "Email doesn't exist!";
+      case 'auth/wrong-password':
+        errorMessage = "Password is incorrect!";
         break;
-      case 'INVALID_PASSWORD':
-        errorMessage = 'Password is not valid!';
+      case 'auth/account-exists-with-different-credential':
+        errorMessage = 'This account is already linked with different login provider!';
+        break;
+      case 'auth/captcha-check-failed':
+        errorMessage='Recaptcha expired or invalid';
+        break;
+      case 'auth/invalid-phone-number':
+        errorMessage='Phone number has invalid format';
+        break;
+      case 'auth/missing-phone-number':
+        errorMessage='Phone number is mising!';
+        break;
+      case 'auth/user-disabled':
+        errorMessage='Unfortunately , you cannot sign in using this phone number!';
+        break;
+      case 'auth/missing-phone-number':
+        errorMessage='Phone number is mising!';
+        break;
+      default:
+        errorMessage=errorRes.message ?? 'An unknown error occurred!!';
+        break;
     }
     return throwError(()=>new Error(errorMessage));
   }

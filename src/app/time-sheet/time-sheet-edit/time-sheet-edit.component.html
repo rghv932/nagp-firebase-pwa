@@ -3,7 +3,7 @@
     <form [formGroup]="timeSheetForm" (ngSubmit)="onSubmit()">
       <div class="row">
         <div class="col-xs-12">
-          <button type="submit" class="btn btn-success" [disabled]="!timeSheetForm.valid">Save</button> |
+          <button type="submit" class="btn btn-success" [disabled]="!timeSheetForm.valid && !photoUploaded">Save</button> |
           <button type="button" class="btn btn-danger" (click)="onCancel()">Cancel</button>
         </div>
       </div>
@@ -51,16 +51,21 @@
           </div>
         </div>
       </div>
-      <div class="row">
-        <div class="col-xs-12" formArrayName="images">
-          <div class="row" *ngFor="let ing of timeSheetForm.get('images')['controls']; let i=index" [formGroupName]="i" style="margin-top: 10px;">
-            <div class="col-xs-12">
-              <label for="description">Please upload a leave approval email screenshot.</label>
-              <input type="file" accept="image/*" class="form-control" formControlName="image">
-            </div>            
-          </div>
-          <hr>
-        </div> 
+      <div class="row" *ngIf="isLeaveDay">
+        <div class="col-xs-12">
+          <div class="form-group">
+            <label for="description">Please upload a leave approval email screenshot.</label>
+            <input type="file" accept="image/*" class="form-control" (change)="selectFile($event)" formControlName="imagePath">
+            <button
+              type="button"
+              class="btn btn-success btn-sm"
+              [disabled]="!selectedFile"
+              (click)="uploadPhoto()"
+            >
+              Upload
+            </button>
+          </div> 
+        </div>
       </div>
     </form>
   </div>

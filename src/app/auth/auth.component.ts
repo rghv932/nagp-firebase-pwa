@@ -8,6 +8,7 @@ import firebase from 'firebase/compat/app';
 import { AuthService } from './auth.service';
 import { AlertComponent } from '../shared/alert/alert.component';
 import { PlaceholderDirective } from '../shared/placeholder/placeholder.directive';
+import { WindowService } from '../shared/window.service';
 
 @Component({
   selector: 'app-auth',
@@ -17,19 +18,21 @@ import { PlaceholderDirective } from '../shared/placeholder/placeholder.directiv
 export class AuthComponent implements OnInit {
   isLoginMode = true;
   isLoading=false;
+  usingPhone=false;
   error:string=null;
   confirmResult;
-  applicationVerifier:firebase.auth.RecaptchaVerifier;
+  windowRef:any;
   @ViewChild(PlaceholderDirective) alertHost: PlaceholderDirective;
 
   private closeSub:Subscription;
 
-  constructor(private authService: AuthService,private router:Router) { 
-    // this.applicationVerifier=new firebase.auth.RecaptchaVerifier(
-    //   'recaptcha-container');
+  constructor(private authService: AuthService,private router:Router, private wService:WindowService) { 
+    this.windowRef=this.wService.windowRef;
   }
 
   ngOnInit(): void {
+    this.windowRef.RecaptchaVerifier=new firebase.auth.RecaptchaVerifier(
+      'recaptcha-container');
   }
 
   onChangeAuthMode() {
@@ -102,60 +105,64 @@ export class AuthComponent implements OnInit {
     });
   }
 
-  // onSubmitUsingPhone(form: NgForm) {
-  //   if(!form.valid){
-  //     return;
-  //   }
+  onSubmitUsingPhone(form: NgForm) {
+    if(!form.valid){
+      return;
+    }
 
-  //   let authObs;
-  //   this.isLoading=true;
-  //   this.applicationVerifier=new firebase.auth.RecaptchaVerifier(
-  //     'recaptcha-container');
+    let authObs;
+    this.isLoading=true;
+    this.usingPhone=true;
+    
+    this.windowRef.RecaptchaVerifier.render();
+    
 
-  //   console.log("application verifier in auth.ts"+this.applicationVerifier);
-  //   authObs = this.authService.phoneSignIn(form.value.phone,this.applicationVerifier);
+    console.log("application verifier in auth.ts"+this.windowRef.RecaptchaVerifier);
+    authObs = this.authService.phoneSignIn(form.value.phone,this.windowRef.RecaptchaVerifier);
 
-  //   authObs.subscribe({
-  //     next:()=>{
-  //       //console.log("this is the submit phone data:",typeof data,"\n"+data);
-  //       this.isLoading=false;
-  //       //console.log("here");
-  //     },
-  //     error:error=>{
-  //       console.log(error);
-  //       this.error=error;
-  //       this.showErrorAlert(error);
-  //       this.isLoading=false;
-  //     }
-  //   });
-  //   form.reset();
-  // }
+    authObs.subscribe({
+      next:()=>{
+        //console.log("this is the submit phone data:",typeof data,"\n"+data);
+        this.isLoading=false;
+        //console.log("here");
+      },
+      error:error=>{
+        console.log(error);
+        this.error=error;
+        this.showErrorAlert(error);
+        this.isLoading=false;
+        this.usingPhone=false;
+      }
+    });
+    form.reset();
+  }
 
-  // onConfirmOTP(form:NgForm){
-  //   if(!form.valid){
-  //     return;
-  //   }
+  onConfirmOTP(form:NgForm){
+    if(!form.valid){
+      return;
+    }
 
-  //   let authObs;
-  //   this.isLoading=true;
+    let authObs;
+    this.isLoading=true;
 
-  //   authObs = this.authService.confirmOTP(form.value.otp);
+    authObs = this.authService.confirmOTP(form.value.otp);
 
-  //   authObs.subscribe({
-  //     next:data=>{
-  //       console.log("this is the otp data:",typeof data,"\n"+data);
-  //       this.isLoading=false;
-  //       //console.log("here");
-  //     },
-  //     error:error=>{
-  //       console.log(error);
-  //       this.error=error;
-  //       this.showErrorAlert(error);
-  //       this.isLoading=false;
-  //     }
-  //   });
-  //   form.reset();
-  // }
+    authObs.subscribe({
+      next:data=>{
+        console.log("this is the otp data:",typeof data,"\n"+data);
+        this.isLoading=false;
+        //console.log("here");
+        this.router.navigate(['/time-sheet']);
+      },
+      error:error=>{
+        console.log(error);
+        this.error=error;
+        this.showErrorAlert(error);
+        this.isLoading=false;
+      }
+    });
+    form.reset();
+  }
 
   onHandleError(){
     this.error=null;

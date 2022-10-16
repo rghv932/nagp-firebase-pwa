@@ -1,8 +1,13 @@
-<hr>
+
 <div class="row" style="margin-right:10vw;">
   <div class="col-xs-12">
-    <h3 *ngIf="timeSheets.length==0">No Entries logged yet by anyone!</h3>
-    <app-manager-item *ngFor="let ts of timeSheets;let i=index" [timeSheet]="ts" [index]="i"></app-manager-item>
+    <h3 *ngIf="timeSheetList.every(isEmpty) || timeSheetList.length==0">No Entries logged yet by anyone!</h3>
+    <div *ngFor="let item of timeSheetList">
+      <div >
+        Name: {{item.userData.name}}
+        <app-manager-item *ngFor="let timeSheet of item.userData.timeSheets;let i=index" [timeSheet]="timeSheet" [timeSheetId]="item.timeSheetId" [index]="i"></app-manager-item>
+        <hr>
+      </div>
+    </div>    
   </div>
 </div>
-<hr>

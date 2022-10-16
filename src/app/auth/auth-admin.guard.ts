@@ -13,7 +13,7 @@ import { take, map } from 'rxjs/operators';
 import { AuthService } from './auth.service';
 
 @Injectable({providedIn:'root'})
-export class AuthGuard implements CanActivate {
+export class AuthAdminGuard implements CanActivate {
   constructor(private authService: AuthService, private router: Router) {}
 
   canActivate(
@@ -29,8 +29,8 @@ export class AuthGuard implements CanActivate {
         map(user=>{
           const isAuth=!!user;
           //console.log(user.role);
-          if(user?.role=='admin'){
-            return this.router.createUrlTree(['/manager']);
+          if(user?.role=='employee'){
+            return this.router.createUrlTree(['/time-sheet']);
           }
           if(isAuth){
             return true;
