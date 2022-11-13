@@ -69,10 +69,7 @@ import { ManagerStartComponent } from './manager/manager-start/manager-start.com
       // Register the ServiceWorker as soon as the app is stable
       // or after 30 seconds (whichever comes first).
       registrationStrategy: 'registerWhenStable:30000'
-    }),
-    // provideFirebaseApp(() => initializeApp(environment.firebase)),
-    // provideAuth(() => getAuth()),
-    // provideDatabase(() => getDatabase())
+    })
   ],
   providers: [DataStorageService,TimeSheetService,AuthService,{provide:HTTP_INTERCEPTORS, useClass:AuthInterceptorService,multi:true}],
   bootstrap: [AppComponent]

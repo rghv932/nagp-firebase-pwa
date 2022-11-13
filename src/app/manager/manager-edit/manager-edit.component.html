@@ -54,7 +54,7 @@
           </div>
         </div>
       </div>
-      <div class="row">
+      <div class="row" *ngIf="timeSheetForm.value.imagePath!=null">
         <div class="col-xs-12">
           <div>
             <img [src]="timeSheetForm.value.imagePath" alt="email screenshot" width="250" height="300">
